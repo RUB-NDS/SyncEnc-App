@@ -22,11 +22,13 @@
 
 package org.openecard.demo.activities;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Message;
+import android.support.customtabs.CustomTabsIntent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.ViewGroup;
@@ -51,8 +53,13 @@ public class IdsActivity extends AppCompatActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_ids);
 
+		String url = "https://argon.cloud.nds.rub.de:8080/";
+		CustomTabsIntent.Builder builder = new CustomTabsIntent.Builder();
+		CustomTabsIntent customTabsIntent = builder.build();
+		customTabsIntent.launchUrl(this, Uri.parse(url));
+		/*
 		final WebView webView = findViewById(R.id.webView);
-
+		final Context context = getApplicationContext();
 		// set up web view settings
 		WebSettings settings = webView.getSettings();
 		settings.setJavaScriptEnabled(true);
@@ -61,35 +68,58 @@ public class IdsActivity extends AppCompatActivity {
 		settings.setJavaScriptCanOpenWindowsAutomatically(true);
 
 		setContentView(webView);
-/*
+
 		webView.setWebChromeClient(new WebChromeClient() {
-			WebView newView = new WebView(getApplicationContext());
 			@Override
 			public boolean onCreateWindow(WebView view, boolean isDialog, boolean isUserGesture, Message resultMsg) {
-				final WebView newView = (WebView) findViewById(R.id.webView);
-				newView.setWebViewClient(new WebActivityClient(context) {
-					@Override
-					public void onPageStarted(WebView view, String url, Bitmap favicon) {
-						Intent intent = new Intent(context, PopupActivity.class);
-						intent.putExtra("URL", url);
-						startActivity(intent);
+				WebView newWebView = new WebView(IdsActivity.this);
 
-						newView.destroy();
+				WebSettings settings = newWebView.getSettings();
+				settings.setJavaScriptEnabled(true);
+
+				view.addView(newWebView);
+
+				newWebView.setWebViewClient(new WebViewClient() {
+					@Override
+					public boolean shouldOverrideUrlLoading(WebView view, String url) {
+
+						Intent browserIntent = new Intent(Intent.ACTION_VIEW);
+						browserIntent.setData(Uri.parse(url));
+						startActivity(browserIntent);
+
+						//view.loadUrl(url);
+						return true;
+					}
+
+					@Override
+					public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
+
+						String url = request.getUrl().toString();
+
+						Intent browserIntent = new Intent(Intent.ACTION_VIEW);
+						browserIntent.setData(Uri.parse(url));
+						startActivity(browserIntent);
+						return true;
+
+						//view.loadUrl(url);
+
 					}
 				});
 
+
 				WebView.WebViewTransport transport = (WebView.WebViewTransport) resultMsg.obj;
-				transport.setWebView(newView);
+				transport.setWebView(newWebView);
 				resultMsg.sendToTarget();
+
 				return true;
 			}
-		});*/
-
+		});
 
 		if (getIntent().getData() != null) {
 			webView.loadUrl(getIntent().getData().toString());
 		} else {
 			webView.loadUrl("https://argon.cloud.nds.rub.de:8080/");
 		}
+		*/
 	}
 }
