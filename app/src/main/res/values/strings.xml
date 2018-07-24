@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Open eCard</string>
+    <string name="app_name">SyncEnc</string>
     <string name="title_activity_binding">Binding</string>
     <string name="title_activity_new_binding">BindingActivity</string>
     <string name="action_settings">Settings</string>
