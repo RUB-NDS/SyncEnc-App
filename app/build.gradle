@@ -43,7 +43,6 @@ dependencies {
     implementation 'com.android.support:appcompat-v7:27.+'
     implementation 'com.android.support.constraint:constraint-layout:1.0.2'
     implementation 'com.android.support:design:27.+'
-    //implementation 'com.android.support:customtabs:27.+'
 
     // the actual Open eCard library
     implementation (group:'org.openecard.clients', name:'android-lib', version:"${OecVersion}", ext:"aar", transitive:true)
