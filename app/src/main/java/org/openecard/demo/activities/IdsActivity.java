@@ -79,8 +79,9 @@ public class IdsActivity extends AppCompatActivity {
 			@Override
 			public boolean onCreateWindow(WebView view, boolean isDialog, boolean isUserGesture, Message resultMsg) {
 				System.out.println(" \t ---> Open new Window");
-				//webView.removeAllViews();
-				WebView newView = (WebView) findViewById(R.id.webView2);
+				webView.setVisibility(View.GONE);
+				final WebView newView = (WebView) findViewById(R.id.webView2);
+				newView.setVisibility(View.VISIBLE);
 				newView.getSettings().setJavaScriptEnabled(true);
 				newView.getSettings().setDomStorageEnabled(true);
 				newView.setWebViewClient(new WebViewClient() {
@@ -88,12 +89,14 @@ public class IdsActivity extends AppCompatActivity {
 					public void onPageFinished(WebView view, String url) {
 						super.onPageFinished(view, url);
 						System.out.println("\t --> TAP: " + url);
+
+						if(url.endsWith("/KMS/ACS")) {
+							System.out.println("\t --> Close webview ");
+							webView.setVisibility(View.VISIBLE);
+							newView.setVisibility(View.GONE);
+						}
 					}
 				});
-
-				//findViewById(R.id.webView).setVisibility(View.INVISIBLE);
-
-				//webView.addView(newView);
 
 				WebView.WebViewTransport transport = (WebView.WebViewTransport) resultMsg.obj;
 				transport.setWebView(newView);
@@ -107,111 +110,7 @@ public class IdsActivity extends AppCompatActivity {
 			webView.loadUrl(getIntent().getData().toString());
 		} else {
 			webView.loadUrl("https://argon.cloud.nds.rub.de:8080/");
-			//this.openCustomChromeTab(Uri.parse("https://argon.cloud.nds.rub.de:8080/"));
+
 		}
 	}
-/*
-	private void openCustomChromeTab(Uri uri) {
-		System.out.println("--------> openCustomChromeTab ---> " + uri.toString());
-		CustomTabsIntent.Builder intentBuilder = new CustomTabsIntent.Builder();
-
-		// set toolbar colors
-		//intentBuilder.setToolbarColor(ContextCompat.getColor(this, R.color.colorPrimary));
-		//intentBuilder.setSecondaryToolbarColor(ContextCompat.getColor(this, R.color.colorPrimaryDark));
-		intentBuilder.setShowTitle(false);
-		intentBuilder.enableUrlBarHiding();
-
-		// build custom tabs intent
-		CustomTabsIntent customTabsIntent = intentBuilder.build();
-
-		customTabsIntent.intent.setPackage(this.getPackageNameToUse(getApplicationContext()));
-		customTabsIntent.launchUrl(this, uri);
-
-		// call helper to open custom tab
-		/*CustomTabActivityHelper.openCustomTab(this, customTabsIntent, uri, new CustomTabActivityHelper.CustomTabFallback() {
-			@Override
-			public void openUri(Activity activity, Uri uri) {
-				// fall back, call open open webview
-				//openWebView(uri);
-			}
-		});*/
-/*	}
-
-	static final String STABLE_PACKAGE = "com.android.chrome";
-	static final String BETA_PACKAGE = "com.chrome.beta";
-	static final String DEV_PACKAGE = "com.chrome.dev";
-	static final String LOCAL_PACKAGE = "com.google.android.apps.chrome";
-	private static final String EXTRA_CUSTOM_TABS_KEEP_ALIVE =
-			"android.support.customtabs.extra.KEEP_ALIVE";
-	private static final String ACTION_CUSTOM_TABS_CONNECTION =
-			"android.support.customtabs.action.CustomTabsService";
-	private static String sPackageNameToUse;
-	private static String getPackageNameToUse(Context context) {
-		if (sPackageNameToUse != null) return sPackageNameToUse;
-
-		PackageManager pm = context.getPackageManager();
-		// Get default VIEW intent handler.
-		Intent activityIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.example.com"));
-		ResolveInfo defaultViewHandlerInfo = pm.resolveActivity(activityIntent, 0);
-		String defaultViewHandlerPackageName = null;
-		if (defaultViewHandlerInfo != null) {
-			defaultViewHandlerPackageName = defaultViewHandlerInfo.activityInfo.packageName;
-		}
-
-		// Get all apps that can handle VIEW intents.
-		List<ResolveInfo> resolvedActivityList = pm.queryIntentActivities(activityIntent, 0);
-		List<String> packagesSupportingCustomTabs = new ArrayList<>();
-		for (ResolveInfo info : resolvedActivityList) {
-			Intent serviceIntent = new Intent();
-			serviceIntent.setAction(ACTION_CUSTOM_TABS_CONNECTION);
-			serviceIntent.setPackage(info.activityInfo.packageName);
-			if (pm.resolveService(serviceIntent, 0) != null) {
-				packagesSupportingCustomTabs.add(info.activityInfo.packageName);
-			}
-		}
-
-		// Now packagesSupportingCustomTabs contains all apps that can handle both VIEW intents
-		// and service calls.
-		if (packagesSupportingCustomTabs.isEmpty()) {
-			sPackageNameToUse = null;
-		} else if (packagesSupportingCustomTabs.size() == 1) {
-			sPackageNameToUse = packagesSupportingCustomTabs.get(0);
-		} else if (!TextUtils.isEmpty(defaultViewHandlerPackageName)
-				&& !hasSpecializedHandlerIntents(context, activityIntent)
-				&& packagesSupportingCustomTabs.contains(defaultViewHandlerPackageName)) {
-			sPackageNameToUse = defaultViewHandlerPackageName;
-		} else if (packagesSupportingCustomTabs.contains(STABLE_PACKAGE)) {
-			sPackageNameToUse = STABLE_PACKAGE;
-		} else if (packagesSupportingCustomTabs.contains(BETA_PACKAGE)) {
-			sPackageNameToUse = BETA_PACKAGE;
-		} else if (packagesSupportingCustomTabs.contains(DEV_PACKAGE)) {
-			sPackageNameToUse = DEV_PACKAGE;
-		} else if (packagesSupportingCustomTabs.contains(LOCAL_PACKAGE)) {
-			sPackageNameToUse = LOCAL_PACKAGE;
-		}
-		return sPackageNameToUse;
-	}
-
-	private static boolean hasSpecializedHandlerIntents(Context context, Intent intent) {
-		try {
-			PackageManager pm = context.getPackageManager();
-			List<ResolveInfo> handlers = pm.queryIntentActivities(
-					intent,
-					PackageManager.GET_RESOLVED_FILTER);
-			if (handlers == null || handlers.size() == 0) {
-				return false;
-			}
-			for (ResolveInfo resolveInfo : handlers) {
-				IntentFilter filter = resolveInfo.filter;
-				if (filter == null) continue;
-				if (filter.countDataAuthorities() == 0 || filter.countDataPaths() == 0) continue;
-				if (resolveInfo.activityInfo == null) continue;
-				return true;
-			}
-		} catch (RuntimeException e) {
-			System.err.println("Runtime exception while getting specialized handlers");
-		}
-		return false;
-	}
-*/
 }
