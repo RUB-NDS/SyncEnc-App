@@ -32,9 +32,9 @@
                 <category android:name="android.intent.category.DEFAULT"/>
                 <category android:name="android.intent.category.BROWSABLE"/>
 
-                <data android:scheme="https" />
-                <data android:host="service.skidentity.de" android:port="443" />
-                <data android:pathPattern="/ids/*"/>
+                <data android:scheme="https"
+                      android:host="service.skidentity.de"
+                      android:pathPattern="/ids/.*"/>
             </intent-filter>
         </activity>
     </application>

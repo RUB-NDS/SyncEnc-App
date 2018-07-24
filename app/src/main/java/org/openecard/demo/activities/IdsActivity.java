@@ -85,6 +85,10 @@ public class IdsActivity extends AppCompatActivity {
 			}
 		});
 
-		webView.loadUrl("https://argon.cloud.nds.rub.de:8080/");
+		if(getIntent().getData() != null) {
+			webView.loadUrl(getIntent().getData().toString());
+		} else {
+			webView.loadUrl("https://argon.cloud.nds.rub.de:8080/");
+		}
 	}
 }
