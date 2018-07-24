@@ -22,39 +22,21 @@
 
 package org.openecard.demo.activities;
 
-import android.app.Activity;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.net.Uri;
-import android.os.Build;
-import android.os.Message;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.TextUtils;
+import android.os.Message;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.view.ViewGroup;
 import android.webkit.WebChromeClient;
-import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import android.widget.RelativeLayout;
-//import android.support.customtabs.CustomTabsIntent;
-import org.openecard.android.activation.ActivationImplementationInterface;
-import org.openecard.demo.R;
 
-import java.util.ArrayList;
-import java.util.List;
+import org.openecard.demo.R;
 
 
 /**
- * @author Mike Prechtl
+ * @author René Lottes
+ * @author Sebastian Schuberth
  */
 public class IdsActivity extends AppCompatActivity {
 
@@ -73,8 +55,6 @@ public class IdsActivity extends AppCompatActivity {
 		settings.setSupportMultipleWindows(true);
 		settings.setJavaScriptCanOpenWindowsAutomatically(true);
 
-		//setContentView(webView);
-
 		webView.setWebChromeClient(new WebChromeClient() {
 			@Override
 			public boolean onCreateWindow(WebView view, boolean isDialog, boolean isUserGesture, Message resultMsg) {
@@ -90,7 +70,7 @@ public class IdsActivity extends AppCompatActivity {
 						super.onPageFinished(view, url);
 						System.out.println("\t --> TAP: " + url);
 
-						if(url.endsWith("/KMS/ACS")) {
+						if (url.endsWith("/KMS/ACS")) {
 							System.out.println("\t --> Close webview ");
 							webView.setVisibility(View.VISIBLE);
 							newView.setVisibility(View.GONE);
@@ -105,12 +85,6 @@ public class IdsActivity extends AppCompatActivity {
 			}
 		});
 
-
-		if (getIntent().getData() != null) {
-			webView.loadUrl(getIntent().getData().toString());
-		} else {
-			webView.loadUrl("https://argon.cloud.nds.rub.de:8080/");
-
-		}
+		webView.loadUrl("https://argon.cloud.nds.rub.de:8080/");
 	}
 }
