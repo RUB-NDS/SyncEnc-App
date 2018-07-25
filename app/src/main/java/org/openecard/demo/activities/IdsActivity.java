@@ -22,6 +22,7 @@
 
 package org.openecard.demo.activities;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
@@ -38,7 +39,7 @@ import org.openecard.demo.R;
  * @author René Lottes
  * @author Sebastian Schuberth
  */
-public class IdsActivity extends AppCompatActivity {
+public class IdsActivity extends Activity {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
