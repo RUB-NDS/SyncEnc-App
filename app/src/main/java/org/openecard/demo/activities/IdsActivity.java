@@ -32,7 +32,7 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
-import org.openecard.demo.R;
+import syncenc.demo.R;
 
 
 /**
